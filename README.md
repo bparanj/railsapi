@@ -76,3 +76,32 @@ docker run --rm -it -w /usr/src/app/myapp rob bundle lock
 
 After running this command build the image, any build after this will not run bundle install if the Gemfile has not changed.
 
+
+11. Update Dockerfile to combine apt-get update and apt-get install into a single RUN instruction:
+
+```
+FROM ruby:latest
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+RUN apt-get update -yqq && \
+    apt-get install -y \
+    build-essential \
+    libpq-dev \
+    nodejs
+
+WORKDIR /usr/src/app/myapp
+
+COPY Gemfile /usr/src/app/Gemfile
+COPY Gemfile.lock /usr/src/app/Gemfile.lock
+
+COPY . /usr/src/app
+RUN bundle install
+
+COPY server.sh /usr/src/app/myapp/server.sh
+RUN cat /usr/src/app/myapp/server.sh
+
+CMD ./server.sh
+```
+
