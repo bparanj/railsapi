@@ -49,3 +49,30 @@ docker run -it --rm -v ${PWD}:/usr/src/app rob rails new myapp --api --skip-test
 ```
 sudo chown $USER:$USER -R myapp
 ```
+
+7. Run the app:
+
+```
+docker run --rm -it -p 3000:3000 rob
+```
+
+8. List Rake tasks:
+
+```
+docker run --rm rob rails -T
+```
+
+9. Using the rails console:
+
+```
+docker run --rm -it rob rails c
+```
+
+10. To avoid gem install during docker build when Gemfile has not changed, go to the project root folder and run:
+
+```
+docker run --rm -it -w /usr/src/app/myapp rob bundle lock
+```
+
+After running this command build the image, any build after this will not run bundle install if the Gemfile has not changed.
+
